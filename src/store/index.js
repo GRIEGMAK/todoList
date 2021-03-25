@@ -1,31 +1,29 @@
-import Card from "../components/Card";
-import React from "react";
 import {makeAutoObservable} from "mobx";
 
 class Store {
     card = [];
     index = 0;
+    categories = []
     constructor() {
         makeAutoObservable(this)
     }
-    getCard = () => {
-        let getCardArray = undefined
-        if (this.card) {
-            getCardArray = this.card.map((c, i) => <Card key={i} id={i + 1} {...c} removeCard={this.removeCard}
-                                                         onClickCheck={this.onClickCheck}/>)
-        }
-        return getCardArray;
-    }
-    addNewCard = (newElement) => {
+    addNewCard = (newElement, newCategory) => {
         let newTask = newElement.current.value
+        let newCategories = newCategory.current.value
+        if(newCategories === ''){
+            newCategories = 'без категории'
+        }
         let newCard = {
             id: this.index + 1,
             task: newTask,
+            category: newCategories,
             completed: false,
         };
         if (newTask !== "") {
             this.card.push(newCard)
             this.index = this.index + 1
+            this.categories.push(newCategories)
+            newCategory.current.value = ''
         }
         newElement.current.value = ''
     }
